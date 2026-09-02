@@ -1,0 +1,1040 @@
+/* =========================================
+   GLOBAL
+========================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f5f7fb;
+  font-family: Arial, sans-serif;
+  color: #172033;
+}
+
+
+/* =========================================
+   DASHBOARD CONTAINER
+========================================= */
+
+.dashboard-container {
+  min-height: 100vh;
+  padding: 18px 32px 50px;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.dashboard-header {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  padding: 24px 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 24px;
+}
+
+.dashboard-header h1 {
+  margin: 0 0 6px;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.dashboard-header p {
+  margin: 0;
+  color: #667085;
+  font-size: 15px;
+}
+
+.logout-button {
+  background: #ffffff;
+  border: 1px solid #d0d5dd;
+
+  padding: 10px 20px;
+
+  border-radius: 8px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background: #f9fafb;
+}
+
+
+/* =========================================
+   DAILY QUESTION
+========================================= */
+
+.daily-question-section {
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  padding: 24px;
+
+  margin-bottom: 24px;
+}
+
+.daily-question-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.daily-label {
+  display: inline-block;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 0.8px;
+
+  margin-bottom: 8px;
+
+  color: #667085;
+}
+
+.daily-question-section h2 {
+  margin: 0 0 12px;
+
+  font-size: 22px;
+}
+
+.daily-solve-button {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: #111827;
+  color: #ffffff;
+
+  text-decoration: none;
+
+  padding: 11px 18px;
+
+  border-radius: 8px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.daily-solve-button:hover {
+  background: #374151;
+}
+
+
+/* =========================================
+   QUESTION META
+========================================= */
+
+.question-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+.question-meta span {
+  background: #f8fafc;
+
+  border: 1px solid #e2e8f0;
+
+  color: #475467;
+
+  padding: 5px 9px;
+
+  border-radius: 6px;
+
+  font-size: 11px;
+}
+
+
+/* =========================================
+   STATS
+========================================= */
+
+.stats-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 20px;
+
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 12px;
+
+  padding: 22px;
+
+  min-height: 110px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: space-between;
+}
+
+.stat-label {
+  color: #667085;
+
+  font-size: 13px;
+}
+
+.stat-card strong {
+  font-size: 28px;
+
+  color: #172033;
+}
+
+
+/* =========================================
+   OVERALL PROGRESS
+========================================= */
+
+.progress-section {
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 12px;
+
+  padding: 24px;
+
+  margin-bottom: 24px;
+}
+
+.progress-heading {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 16px;
+}
+
+.progress-heading h2 {
+  margin: 0 0 5px;
+
+  font-size: 20px;
+}
+
+.progress-heading p {
+  margin: 0;
+
+  color: #667085;
+
+  font-size: 13px;
+}
+
+.progress-heading strong {
+  font-size: 24px;
+}
+
+.progress-bar-container {
+  width: 100%;
+
+  height: 10px;
+
+  background: #e9edf3;
+
+  border-radius: 20px;
+
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+
+  background: #172033;
+
+  border-radius: 20px;
+
+  transition: width 0.3s ease;
+}
+
+
+/* =========================================
+   MY QUESTIONS
+========================================= */
+
+.my-questions-section {
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 12px;
+
+  margin-bottom: 24px;
+
+  overflow: hidden;
+}
+
+.my-questions-heading {
+  padding: 22px 24px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.my-questions-heading h2 {
+  margin: 0 0 5px;
+
+  font-size: 20px;
+}
+
+.my-questions-heading p {
+  margin: 0;
+
+  color: #667085;
+
+  font-size: 13px;
+}
+
+.my-questions-heading > span {
+  background: #f2f4f7;
+
+  color: #344054;
+
+  padding: 7px 12px;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+
+  font-weight: 600;
+}
+
+
+/* =========================================
+   MY QUESTION LIST
+========================================= */
+
+.my-question-list {
+  padding: 0 24px;
+}
+
+.my-question-card {
+  padding: 20px 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 25px;
+
+  border-bottom: 1px solid #eef0f3;
+}
+
+.my-question-card:last-child {
+  border-bottom: none;
+}
+
+.my-question-info {
+  min-width: 0;
+}
+
+.my-question-info h3 {
+  margin: 0 0 8px;
+
+  font-size: 16px;
+}
+
+.my-question-info p {
+  margin: 0 0 10px;
+
+  color: #667085;
+
+  font-size: 13px;
+}
+
+
+/* =========================================
+   STATUS BADGES
+========================================= */
+
+.my-status {
+  display: inline-block;
+
+  padding: 5px 9px;
+
+  border-radius: 20px;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.3px;
+}
+
+.my-status.selected {
+  background: #eef2ff;
+  color: #3730a3;
+}
+
+.my-status.in_progress {
+  background: #fff7e6;
+  color: #92400e;
+}
+
+.my-status.completed {
+  background: #ecfdf3;
+  color: #166534;
+}
+
+
+/* =========================================
+   MY QUESTION ACTIONS
+========================================= */
+
+.my-question-actions {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-end;
+
+  gap: 8px;
+
+  flex-shrink: 0;
+}
+
+
+/* Solve button */
+
+.solve-button {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: #111827;
+
+  color: #ffffff;
+
+  text-decoration: none;
+
+  padding: 9px 14px;
+
+  border-radius: 8px;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.solve-button:hover {
+  background: #374151;
+}
+
+
+/* Start */
+
+.start-button {
+  border: 1px solid #d0d5dd;
+
+  background: #ffffff;
+
+  color: #172033;
+
+  padding: 9px 14px;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.start-button:hover {
+  background: #f9fafb;
+}
+
+
+/* Complete */
+
+.complete-button {
+  border: 1px solid #111827;
+
+  background: #111827;
+
+  color: #ffffff;
+
+  padding: 9px 14px;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.complete-button:hover {
+  background: #374151;
+}
+
+
+/* =========================================
+   EMPTY MY QUESTIONS
+========================================= */
+
+.my-questions-empty {
+  padding: 50px 20px;
+
+  text-align: center;
+}
+
+.my-questions-empty h3 {
+  margin: 0 0 8px;
+
+  font-size: 16px;
+}
+
+.my-questions-empty p {
+  margin: 0;
+
+  color: #667085;
+
+  font-size: 13px;
+}
+
+
+/* =========================================
+   PRACTICE QUESTIONS
+========================================= */
+
+.practice-section {
+  background: transparent;
+
+  margin-top: 10px;
+}
+
+.practice-heading {
+  margin-bottom: 18px;
+}
+
+.practice-heading h2 {
+  margin: 0 0 6px;
+
+  font-size: 22px;
+}
+
+.practice-heading p {
+  margin: 0;
+
+  color: #667085;
+
+  font-size: 13px;
+}
+
+
+/* =========================================
+   FILTERS
+========================================= */
+
+.filters-container {
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 10px;
+
+  padding: 14px;
+
+  display: flex;
+
+  gap: 10px;
+
+  flex-wrap: wrap;
+
+  margin-bottom: 18px;
+}
+
+.filters-container input,
+.filters-container select {
+  height: 40px;
+
+  border: 1px solid #d0d5dd;
+
+  border-radius: 7px;
+
+  padding: 0 11px;
+
+  font-size: 13px;
+
+  color: #344054;
+
+  background: #ffffff;
+
+  outline: none;
+}
+
+.filters-container input:focus,
+.filters-container select:focus {
+  border-color: #667085;
+}
+
+.filters-container input:first-child {
+  flex: 1;
+
+  min-width: 220px;
+}
+
+.filters-container input:not(:first-child),
+.filters-container select {
+  width: 150px;
+}
+
+.filter-button {
+  height: 40px;
+
+  border: none;
+
+  border-radius: 7px;
+
+  background: #111827;
+
+  color: #ffffff;
+
+  padding: 0 16px;
+
+  cursor: pointer;
+
+  font-size: 13px;
+
+  font-weight: 600;
+}
+
+.filter-button:hover {
+  background: #374151;
+}
+
+
+/* =========================================
+   QUESTION LIST
+========================================= */
+
+.question-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+.question-card {
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 12px;
+
+  padding: 22px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 25px;
+
+  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.04);
+}
+
+.question-info {
+  min-width: 0;
+
+  flex: 1;
+}
+
+.question-info h3 {
+  display: inline-block;
+
+  margin: 0 14px 0 0;
+
+  font-size: 17px;
+}
+
+.question-info .question-meta {
+  display: inline-flex;
+
+  vertical-align: middle;
+}
+
+.question-info .question-meta span {
+  font-size: 11px;
+}
+
+
+/* =========================================
+   QUESTION TAGS
+========================================= */
+
+.question-tags {
+  display: inline-flex;
+
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 5px;
+
+  margin-left: 8px;
+}
+
+.question-tags span {
+  background: #eef2ff;
+
+  color: #4338ca;
+
+  padding: 6px 9px;
+
+  border-radius: 6px;
+
+  font-size: 11px;
+}
+
+
+/* =========================================
+   QUESTION ACTIONS
+========================================= */
+
+.question-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  flex-shrink: 0;
+}
+
+.select-button {
+  border: 1px solid #111827;
+
+  background: #ffffff;
+
+  color: #111827;
+
+  padding: 9px 14px;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.select-button:hover {
+  background: #f3f4f6;
+}
+
+
+/* =========================================
+   PRACTICE STATUS
+========================================= */
+
+.practice-status {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 8px 11px;
+
+  border-radius: 20px;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.practice-status.selected {
+  background: #eef2ff;
+
+  color: #3730a3;
+}
+
+.practice-status.in_progress {
+  background: #fff7e6;
+
+  color: #92400e;
+}
+
+.practice-status.completed {
+  background: #ecfdf3;
+
+  color: #166534;
+}
+
+
+/* =========================================
+   NO QUESTIONS
+========================================= */
+
+.no-questions {
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 12px;
+
+  padding: 50px 20px;
+
+  text-align: center;
+}
+
+.no-questions h3 {
+  margin: 0 0 8px;
+
+  font-size: 16px;
+}
+
+.no-questions p {
+  margin: 0;
+
+  color: #667085;
+
+  font-size: 13px;
+}
+
+
+/* =========================================
+   LOADING
+========================================= */
+
+.dashboard-loading {
+  min-height: 100vh;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #f5f7fb;
+}
+
+.dashboard-loading h2 {
+  font-size: 20px;
+
+  color: #344054;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1000px) {
+
+  .dashboard-container {
+    padding: 15px 20px 40px;
+  }
+
+  .stats-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .question-card {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .question-actions {
+    width: 100%;
+
+    justify-content: flex-start;
+  }
+
+  .my-question-card {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .my-question-actions {
+    width: 100%;
+
+    justify-content: flex-start;
+  }
+}
+
+
+@media (max-width: 650px) {
+
+  .dashboard-container {
+    padding: 10px 12px 30px;
+  }
+
+  .dashboard-header {
+    padding: 20px;
+
+    align-items: flex-start;
+
+    gap: 15px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 26px;
+  }
+
+  .dashboard-header p {
+    font-size: 13px;
+  }
+
+  .daily-question-content {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .daily-solve-button {
+    width: 100%;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+
+    gap: 12px;
+  }
+
+  .stat-card {
+    min-height: 90px;
+  }
+
+  .my-questions-heading {
+    align-items: flex-start;
+
+    gap: 12px;
+
+    flex-direction: column;
+  }
+
+  .question-card {
+    padding: 18px;
+  }
+
+  .question-info h3 {
+    display: block;
+
+    margin-bottom: 10px;
+  }
+
+  .question-info .question-meta {
+    display: flex;
+  }
+
+  .question-tags {
+    margin: 10px 0 0;
+  }
+
+  .question-actions {
+    flex-wrap: wrap;
+  }
+
+  .my-question-actions {
+    flex-wrap: wrap;
+  }
+
+  .filters-container {
+    flex-direction: column;
+  }
+
+  .filters-container input,
+  .filters-container select,
+  .filters-container input:first-child,
+  .filters-container input:not(:first-child) {
+    width: 100%;
+
+    min-width: 0;
+  }
+
+  .filter-button {
+    width: 100%;
+  }
+}
+.solve-button {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: #111827;
+
+  color: #ffffff;
+
+  border: 1px solid #111827;
+
+  text-decoration: none;
+
+  padding: 9px 14px;
+
+  border-radius: 8px;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+}
+
+.solve-button:hover {
+  background: #374151;
+}

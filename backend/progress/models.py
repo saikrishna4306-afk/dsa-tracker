@@ -49,3 +49,74 @@ class DailyQuestion(models.Model):
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+class CodeSubmission(models.Model):
+
+    class SubmissionStatus(models.TextChoices):
+        SUBMITTED = "SUBMITTED", "Submitted"
+        RUNNING = "RUNNING", "Running"
+        PASSED = "PASSED", "Passed"
+        FAILED = "FAILED", "Failed"
+        ERROR = "ERROR", "Error"
+
+    class Language(models.TextChoices):
+        PYTHON = "PYTHON", "Python"
+        JAVASCRIPT = "JAVASCRIPT", "JavaScript"
+        JAVA = "JAVA", "Java"
+        CPP = "CPP", "C++"
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="code_submissions"
+    )
+
+    question = models.ForeignKey(
+        "questions.Question",
+        on_delete=models.CASCADE,
+        related_name="code_submissions"
+    )
+
+    language = models.CharField(
+        max_length=20,
+        choices=Language.choices
+    )
+
+    code = models.TextField()
+
+    status = models.CharField(
+        max_length=20,
+        choices=SubmissionStatus.choices,
+        default=SubmissionStatus.SUBMITTED
+    )
+
+    test_cases_passed = models.IntegerField(
+        default=0
+    )
+
+    total_test_cases = models.IntegerField(
+        default=0
+    )
+
+    score = models.FloatField(
+        null=True,
+        blank=True
+    )
+
+    feedback = models.TextField(
+        blank=True
+    )
+
+    submitted_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
+
+    def __str__(self):
+        return (
+            f"{self.user.username} - "
+            f"{self.question.title}"
+        )

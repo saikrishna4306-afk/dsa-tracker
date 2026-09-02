@@ -3,8 +3,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import UserSelection,DailyQuestion
-from .serializers import UserSelectionSerializer,DailyQuestionSerializer
+from .models import UserSelection,DailyQuestion,CodeSubmission
+from .serializers import UserSelectionSerializer,DailyQuestionSerializer,CodeSubmissionSerializer
+from drf_spectacular.utils import extend_schema
 
 
 class UserSelectionView(APIView):
@@ -96,3 +97,42 @@ class DailyQuestionView(APIView):
             serializer.data,
             status=status.HTTP_200_OK,
         )    
+
+class CodeSubmissionView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        submissions = CodeSubmission.objects.filter(
+            user=request.user
+        ).order_by("-submitted_at")
+
+        serializer = CodeSubmissionSerializer(
+            submissions,
+            many=True
+        )
+
+        return Response(serializer.data)
+
+    @extend_schema(
+        request=CodeSubmissionSerializer,
+        responses=CodeSubmissionSerializer,
+    )
+    def post(self, request):
+        serializer = CodeSubmissionSerializer(
+            data=request.data
+        )
+
+        if serializer.is_valid():
+            submission = serializer.save(
+                user=request.user
+            )
+
+            return Response(
+                CodeSubmissionSerializer(submission).data,
+                status=status.HTTP_201_CREATED
+            )
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
