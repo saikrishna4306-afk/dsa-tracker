@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+
 import apiClient from "../api/client";
 import "../styles/ProblemWorkspace.css";
 
@@ -8,22 +9,18 @@ function ProblemWorkspace() {
   const navigate = useNavigate();
 
   const [question, setQuestion] = useState(null);
-
   const [language, setLanguage] = useState("python");
 
   const [code, setCode] = useState(
-`def solution():
+`def solution(nums, target):
     # Write your solution here
     pass`
   );
 
   const [loading, setLoading] = useState(true);
-
-  // Submission states
   const [submitting, setSubmitting] = useState(false);
   const [submissionResult, setSubmissionResult] = useState(null);
 
-  // Convert frontend language values to Django values
   const languageMap = {
     python: "PYTHON",
     javascript: "JAVASCRIPT",
@@ -31,7 +28,10 @@ function ProblemWorkspace() {
     cpp: "CPP",
   };
 
-  // Load question
+  // ---------------------------------------------------------
+  // Load Question
+  // ---------------------------------------------------------
+
   useEffect(() => {
     const getQuestion = async () => {
       try {
@@ -41,7 +41,10 @@ function ProblemWorkspace() {
 
         setQuestion(response.data);
       } catch (error) {
-        console.error("Failed to load question:", error);
+        console.error(
+          "Failed to load question:",
+          error
+        );
       } finally {
         setLoading(false);
       }
@@ -50,12 +53,52 @@ function ProblemWorkspace() {
     getQuestion();
   }, [questionId]);
 
+  // ---------------------------------------------------------
   // Run Code
-  const handleRunCode = () => {
-    alert("Code execution will be implemented next.");
+  // ---------------------------------------------------------
+
+  const handleRunCode = async () => {
+    try {
+      setSubmitting(true);
+      setSubmissionResult(null);
+
+      const response = await apiClient.post(
+        "/progress/run/",
+        {
+          question: Number(questionId),
+          language: languageMap[language],
+          code: code,
+        }
+      );
+
+      setSubmissionResult({
+        ...response.data,
+        isRun: true,
+      });
+    } catch (error) {
+      console.error(
+        "Failed to run code:",
+        error
+      );
+
+      console.error(
+        "Backend error:",
+        error.response?.data
+      );
+
+      alert(
+        error.response?.data?.detail ||
+        "Failed to run code."
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
+  // ---------------------------------------------------------
   // Submit Solution
+  // ---------------------------------------------------------
+
   const handleSubmit = async () => {
     try {
       setSubmitting(true);
@@ -70,10 +113,15 @@ function ProblemWorkspace() {
         }
       );
 
-      setSubmissionResult(response.data);
-
+      setSubmissionResult({
+        ...response.data,
+        isRun: false,
+      });
     } catch (error) {
-      console.error("Failed to submit solution:", error);
+      console.error(
+        "Failed to submit solution:",
+        error
+      );
 
       console.error(
         "Backend error:",
@@ -89,7 +137,10 @@ function ProblemWorkspace() {
     }
   };
 
-  // Loading state
+  // ---------------------------------------------------------
+  // Loading
+  // ---------------------------------------------------------
+
   if (loading) {
     return (
       <div className="workspace-loading">
@@ -98,7 +149,10 @@ function ProblemWorkspace() {
     );
   }
 
-  // Question not found
+  // ---------------------------------------------------------
+  // Question Not Found
+  // ---------------------------------------------------------
+
   if (!question) {
     return (
       <div className="workspace-error">
@@ -113,10 +167,17 @@ function ProblemWorkspace() {
     );
   }
 
+  // ---------------------------------------------------------
+  // Main UI
+  // ---------------------------------------------------------
+
   return (
     <div className="workspace-container">
 
-      {/* Header */}
+      {/* =====================================================
+          HEADER
+      ===================================================== */}
+
       <header className="workspace-header">
 
         <button
@@ -131,13 +192,15 @@ function ProblemWorkspace() {
       </header>
 
 
-      {/* Problem Information */}
+      {/* =====================================================
+          PROBLEM INFORMATION
+      ===================================================== */}
+
       <section className="problem-info">
 
         <div className="problem-heading">
 
           <div>
-
             <h2>{question.title}</h2>
 
             <div className="problem-meta">
@@ -155,9 +218,7 @@ function ProblemWorkspace() {
               </span>
 
             </div>
-
           </div>
-
 
           <a
             href={question.url}
@@ -172,6 +233,7 @@ function ProblemWorkspace() {
 
 
         {/* Tags */}
+
         {question.tags &&
           question.tags.length > 0 && (
 
@@ -192,24 +254,27 @@ function ProblemWorkspace() {
       </section>
 
 
-      {/* Code Workspace */}
+      {/* =====================================================
+          CODE WORKSPACE
+      ===================================================== */}
+
       <section className="code-workspace">
 
         {/* Editor Header */}
+
         <div className="editor-header">
 
           <div>
-
             <h3>Solution</h3>
 
             <p>
               Write your solution below.
             </p>
-
           </div>
 
 
-          {/* Language Selection */}
+          {/* Language */}
+
           <select
             value={language}
             onChange={(e) =>
@@ -217,7 +282,6 @@ function ProblemWorkspace() {
             }
             disabled={submitting}
           >
-
             <option value="python">
               Python
             </option>
@@ -233,13 +297,13 @@ function ProblemWorkspace() {
             <option value="cpp">
               C++
             </option>
-
           </select>
 
         </div>
 
 
         {/* Code Editor */}
+
         <textarea
           className="code-editor"
           value={code}
@@ -251,7 +315,10 @@ function ProblemWorkspace() {
         />
 
 
-        {/* Actions */}
+        {/* =====================================================
+            ACTION BUTTONS
+        ===================================================== */}
+
         <div className="editor-actions">
 
           <button
@@ -259,7 +326,9 @@ function ProblemWorkspace() {
             onClick={handleRunCode}
             disabled={submitting}
           >
-            ▶ Run Code
+            {submitting
+              ? "Running..."
+              : "▶ Run Code"}
           </button>
 
 
@@ -276,73 +345,609 @@ function ProblemWorkspace() {
         </div>
 
 
-        {/* Submission Result */}
+        {/* =====================================================
+            OUTPUT
+        ===================================================== */}
+
         <div className="output-section">
 
           <h3>
-            Submission Result
+            {submissionResult?.isRun
+              ? "Run Result"
+              : "Submission Result"}
           </h3>
 
 
-          {!submissionResult ? (
+          {/* No result */}
+
+          {!submissionResult && (
 
             <div className="output-placeholder">
 
               <p>
-                Submit your solution to see
-                the result.
+                Run your code to test it, or submit
+                your solution to save your submission.
               </p>
 
             </div>
 
-          ) : (
+          )}
+
+
+          {/* ===================================================
+              RESULT
+          =================================================== */}
+
+          {submissionResult && (
 
             <div className="submission-result">
 
-              <p>
-                <strong>Status:</strong>{" "}
-                {submissionResult.status}
-              </p>
+
+              {/* =================================================
+                  SUMMARY
+              ================================================= */}
+
+              <div className="result-summary">
+
+                <div className="result-status">
+
+                  <strong>
+                    Status:
+                  </strong>
+
+                  <span
+                    className={
+                      submissionResult.status ===
+                      "PASSED"
+                        ? "status-passed"
+                        : submissionResult.status ===
+                          "FAILED"
+                        ? "status-failed"
+                        : "status-other"
+                    }
+                  >
+                    {submissionResult.status}
+                  </span>
+
+                </div>
 
 
-              <p>
-                <strong>
-                  Submission ID:
-                </strong>{" "}
-                {submissionResult.id}
-              </p>
+                {/* Submission ID */}
+
+                {!submissionResult.isRun && (
+
+                  <p>
+                    <strong>
+                      Submission ID:
+                    </strong>{" "}
+                    {submissionResult.id}
+                  </p>
+
+                )}
 
 
-              <p>
-                <strong>
-                  Test Cases:
-                </strong>{" "}
-                {submissionResult.test_cases_passed}
-                {" / "}
-                {submissionResult.total_test_cases}
-              </p>
+                {/* Test Cases */}
+
+                <p>
+
+                  <strong>
+                    Test Cases:
+                  </strong>{" "}
+
+                  {submissionResult.test_cases_passed}
+
+                  {" / "}
+
+                  {submissionResult.total_test_cases}
+
+                </p>
+
+              </div>
 
 
-              <p>
-                <strong>
-                  Score:
-                </strong>{" "}
+              {/* =================================================
+                  SCORE + AI
+              ================================================= */}
 
-                {submissionResult.score !== null
-                  ? submissionResult.score
-                  : "Not evaluated yet"}
-              </p>
+              {!submissionResult.isRun && (
+
+                <div className="score-section">
 
 
-              <p>
-                <strong>
-                  Feedback:
-                </strong>{" "}
+                  {/* =============================================
+                      FINAL SCORE
+                  ============================================= */}
 
-                {submissionResult.feedback
-                  ? submissionResult.feedback
-                  : "Not evaluated yet"}
-              </p>
+                  <div className="final-score">
+
+                    <span className="score-label">
+                      Final Score
+                    </span>
+
+                    <span className="score-value">
+
+                      {submissionResult.score !==
+                        null &&
+                      submissionResult.score !==
+                        undefined
+                        ? `${submissionResult.score} / 100`
+                        : "Not evaluated yet"}
+
+                    </span>
+
+                  </div>
+
+
+                  {/* =============================================
+                      SCORE BREAKDOWN
+                  ============================================= */}
+
+                  <div className="score-breakdown">
+
+                    <h4>
+                      Score Breakdown
+                    </h4>
+
+
+                    {/* Correctness */}
+
+                    <div className="score-row">
+
+                      <span>
+                        Correctness
+                      </span>
+
+                      <strong>
+
+                        {submissionResult.total_test_cases >
+                        0
+                          ? `${Math.round(
+                              (
+                                submissionResult.test_cases_passed /
+                                submissionResult.total_test_cases
+                              ) * 40
+                            )} / 40`
+                          : "0 / 40"}
+
+                      </strong>
+
+                    </div>
+
+
+                    {/* Algorithm */}
+
+                    <div className="score-row">
+
+                      <span>
+                        Algorithm / Approach
+                      </span>
+
+                      <strong>
+
+                        {submissionResult.algorithm_score ??
+                          0}
+
+                        {" / 25"}
+
+                      </strong>
+
+                    </div>
+
+
+                    {/* Time */}
+
+                    <div className="score-row">
+
+                      <span>
+                        Time Complexity
+                      </span>
+
+                      <strong>
+
+                        {submissionResult.time_complexity_score ??
+                          0}
+
+                        {" / 15"}
+
+                      </strong>
+
+                    </div>
+
+
+                    {/* Space */}
+
+                    <div className="score-row">
+
+                      <span>
+                        Space Complexity
+                      </span>
+
+                      <strong>
+
+                        {submissionResult.space_complexity_score ??
+                          0}
+
+                        {" / 10"}
+
+                      </strong>
+
+                    </div>
+
+
+                    {/* Code Quality */}
+
+                    <div className="score-row">
+
+                      <span>
+                        Code Quality
+                      </span>
+
+                      <strong>
+
+                        {submissionResult.code_quality_score ??
+                          0}
+
+                        {" / 10"}
+
+                      </strong>
+
+                    </div>
+
+                  </div>
+
+
+                  {/* =================================================
+                      AI EVALUATION
+                  ================================================= */}
+
+                  <div className="ai-feedback">
+
+                    <div className="ai-feedback-header">
+
+                      <div>
+                        <h4>
+                          AI Evaluation
+                        </h4>
+
+                        <p>
+                          Detailed analysis of your
+                          submitted solution.
+                        </p>
+                      </div>
+
+                    </div>
+
+
+                    <div className="ai-feedback-grid">
+
+
+                      {/* =========================================
+                          ALGORITHM
+                      ========================================= */}
+
+                      <div className="feedback-item">
+
+                        <div className="feedback-item-header">
+
+                          <strong>
+                            Algorithm / Approach
+                          </strong>
+
+                          <span className="feedback-score">
+
+                            {submissionResult.algorithm_score ??
+                              0}
+
+                            {" / 25"}
+
+                          </span>
+
+                        </div>
+
+                        <p>
+                          {submissionResult.algorithm_feedback ||
+                            "Not evaluated yet."}
+                        </p>
+
+                      </div>
+
+
+                      {/* =========================================
+                          TIME COMPLEXITY
+                      ========================================= */}
+
+                      <div className="feedback-item">
+
+                        <div className="feedback-item-header">
+
+                          <strong>
+                            Time Complexity
+                          </strong>
+
+                          <span className="feedback-score">
+
+                            {submissionResult.time_complexity_score ??
+                              0}
+
+                            {" / 15"}
+
+                          </span>
+
+                        </div>
+
+                        <p>
+                          {submissionResult.time_complexity ||
+                            "Not evaluated yet."}
+                        </p>
+
+                      </div>
+
+
+                      {/* =========================================
+                          SPACE COMPLEXITY
+                      ========================================= */}
+
+                      <div className="feedback-item">
+
+                        <div className="feedback-item-header">
+
+                          <strong>
+                            Space Complexity
+                          </strong>
+
+                          <span className="feedback-score">
+
+                            {submissionResult.space_complexity_score ??
+                              0}
+
+                            {" / 10"}
+
+                          </span>
+
+                        </div>
+
+                        <p>
+                          {submissionResult.space_complexity ||
+                            "Not evaluated yet."}
+                        </p>
+
+                      </div>
+
+
+                      {/* =========================================
+                          CODE QUALITY
+                      ========================================= */}
+
+                      <div className="feedback-item">
+
+                        <div className="feedback-item-header">
+
+                          <strong>
+                            Code Quality
+                          </strong>
+
+                          <span className="feedback-score">
+
+                            {submissionResult.code_quality_score ??
+                              0}
+
+                            {" / 10"}
+
+                          </span>
+
+                        </div>
+
+                        <p>
+                          {submissionResult.code_quality_feedback ||
+                            "Not evaluated yet."}
+                        </p>
+
+                      </div>
+
+
+                      {/* =========================================
+                          OVERALL FEEDBACK
+                      ========================================= */}
+
+                      <div className="feedback-item overall-feedback">
+
+                        <div className="feedback-item-header">
+
+                          <strong>
+                            Overall Feedback
+                          </strong>
+
+                        </div>
+
+                        <p>
+                          {submissionResult.overall_feedback ||
+                            "Not evaluated yet."}
+                        </p>
+
+                      </div>
+
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              )}
+
+
+              {/* =================================================
+                  TEST CASE RESULTS
+              ================================================= */}
+
+              {submissionResult.test_results &&
+                submissionResult.test_results.length >
+                  0 && (
+
+                  <div className="test-results">
+
+                    <h4>
+                      Test Case Results
+                    </h4>
+
+
+                    {submissionResult.test_results.map(
+                      (testResult, index) => {
+
+                        const isHidden =
+                          !testResult.input &&
+                          !testResult.expected_output;
+
+                        return (
+
+                          <div
+                            key={
+                              testResult.test_case_id
+                            }
+                            className={
+                              `test-result-item ${
+                                testResult.passed
+                                  ? "test-passed"
+                                  : "test-failed"
+                              }`
+                            }
+                          >
+
+
+                            {/* Test Header */}
+
+                            <div className="test-result-header">
+
+                              <span>
+                                Test Case{" "}
+                                {index + 1}
+                              </span>
+
+                              <span>
+
+                                {testResult.passed
+                                  ? "✓ Passed"
+                                  : "✗ Failed"}
+
+                              </span>
+
+                            </div>
+
+
+                            {/* Hidden Test */}
+
+                            {isHidden && (
+
+                              <p className="hidden-test-message">
+
+                                🔒 Hidden test case
+
+                              </p>
+
+                            )}
+
+
+                            {/* Visible Test */}
+
+                            {!isHidden && (
+
+                              <div className="test-result-details">
+
+
+                                {/* Input */}
+
+                                <div>
+
+                                  <strong>
+                                    Input
+                                  </strong>
+
+                                  <pre>
+
+                                    {JSON.stringify(
+                                      testResult.input,
+                                      null,
+                                      2
+                                    )}
+
+                                  </pre>
+
+                                </div>
+
+
+                                {/* Expected */}
+
+                                <div>
+
+                                  <strong>
+                                    Expected Output
+                                  </strong>
+
+                                  <pre>
+
+                                    {JSON.stringify(
+                                      testResult.expected_output,
+                                      null,
+                                      2
+                                    )}
+
+                                  </pre>
+
+                                </div>
+
+
+                                {/* Actual */}
+
+                                <div>
+
+                                  <strong>
+                                    Your Output
+                                  </strong>
+
+                                  <pre>
+
+                                    {JSON.stringify(
+                                      testResult.actual_output,
+                                      null,
+                                      2
+                                    )}
+
+                                  </pre>
+
+                                </div>
+
+
+                                {/* Error */}
+
+                                {testResult.error && (
+
+                                  <div>
+
+                                    <strong>
+                                      Error
+                                    </strong>
+
+                                    <pre>
+                                      {testResult.error}
+                                    </pre>
+
+                                  </div>
+
+                                )}
+
+                              </div>
+
+                            )}
+
+                          </div>
+
+                        );
+                      }
+                    )}
+
+                  </div>
+
+                )}
 
             </div>
 

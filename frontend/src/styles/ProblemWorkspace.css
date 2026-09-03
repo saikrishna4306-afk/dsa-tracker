@@ -453,3 +453,406 @@
     width: 100%;
   }
 }
+.result-summary {
+  margin-bottom: 24px;
+}
+
+.result-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.status-passed {
+  font-weight: 700;
+}
+
+.status-failed {
+  font-weight: 700;
+}
+
+.status-other {
+  font-weight: 700;
+}
+
+.test-results {
+  margin-top: 24px;
+}
+
+.test-results h4 {
+  margin-bottom: 16px;
+}
+
+.test-result-item {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.test-passed {
+  border-left: 4px solid #2e7d32;
+}
+
+.test-failed {
+  border-left: 4px solid #c62828;
+}
+
+.test-result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  font-weight: 600;
+  background: #f7f7f7;
+}
+
+.hidden-test-message {
+  padding: 14px 16px;
+  margin: 0;
+}
+
+.test-result-details {
+  padding: 16px;
+}
+
+.test-result-details > div {
+  margin-bottom: 16px;
+}
+
+.test-result-details > div:last-child {
+  margin-bottom: 0;
+}
+
+.test-result-details strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.test-result-details pre {
+  background: #f5f5f5;
+  padding: 12px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 0;
+  font-family: monospace;
+  white-space: pre-wrap;
+}
+.result-summary {
+  margin-bottom: 24px;
+}
+
+.result-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.status-passed {
+  font-weight: 700;
+}
+
+.status-failed {
+  font-weight: 700;
+}
+
+.status-other {
+  font-weight: 700;
+}
+
+.test-results {
+  margin-top: 24px;
+}
+
+.test-results h4 {
+  margin-bottom: 16px;
+}
+
+.test-result-item {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.test-passed {
+  border-left: 4px solid #2e7d32;
+}
+
+.test-failed {
+  border-left: 4px solid #c62828;
+}
+
+.test-result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  font-weight: 600;
+  background: #f7f7f7;
+}
+
+.hidden-test-message {
+  padding: 14px 16px;
+  margin: 0;
+}
+
+.test-result-details {
+  padding: 16px;
+}
+
+.test-result-details > div {
+  margin-bottom: 16px;
+}
+
+.test-result-details > div:last-child {
+  margin-bottom: 0;
+}
+
+.test-result-details strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.test-result-details pre {
+  background: #f5f5f5;
+  padding: 12px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 0;
+  font-family: monospace;
+  white-space: pre-wrap;
+}
+/*/* =========================================================
+   SCORE SECTION
+========================================================= */
+
+.score-section {
+  margin-top: 24px;
+}
+
+
+/* =========================================================
+   FINAL SCORE
+========================================================= */
+
+.final-score {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 20px;
+  margin-bottom: 24px;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+
+  background: #f7f7f7;
+}
+
+.score-label {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.score-value {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   SCORE BREAKDOWN
+========================================================= */
+
+.score-breakdown {
+  margin-bottom: 28px;
+}
+
+.score-breakdown h4 {
+  margin-bottom: 16px;
+}
+
+.score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 12px 16px;
+
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.score-row:last-child {
+  border-bottom: none;
+}
+
+.score-row strong {
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   AI FEEDBACK
+========================================================= */
+
+.ai-feedback {
+  margin-top: 28px;
+}
+
+.ai-feedback-header {
+  margin-bottom: 18px;
+}
+
+.ai-feedback-header h4 {
+  margin: 0 0 6px;
+  font-size: 20px;
+}
+
+.ai-feedback-header p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   AI FEEDBACK GRID
+========================================================= */
+
+.ai-feedback-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 16px;
+}
+
+
+/* =========================================================
+   FEEDBACK CARD
+========================================================= */
+
+.feedback-item {
+  padding: 18px;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+
+  background: #fff;
+
+  min-width: 0;
+}
+
+
+/* =========================================================
+   FEEDBACK CARD HEADER
+========================================================= */
+
+.feedback-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 12px;
+}
+
+.feedback-item-header strong {
+  font-size: 15px;
+}
+
+
+/* =========================================================
+   FEEDBACK SCORE
+========================================================= */
+
+.feedback-score {
+  flex-shrink: 0;
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   FEEDBACK TEXT
+========================================================= */
+
+.feedback-item p {
+  margin: 0;
+
+  line-height: 1.6;
+
+  color: #444;
+
+  white-space: pre-wrap;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   OVERALL FEEDBACK
+========================================================= */
+
+.feedback-item.overall-feedback {
+  grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.status-passed {
+  color: #198754;
+  font-weight: 700;
+}
+
+.status-failed {
+  color: #dc3545;
+  font-weight: 700;
+}
+
+.status-other {
+  color: #666;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .ai-feedback-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feedback-item.overall-feedback {
+    grid-column: auto;
+  }
+
+  .final-score {
+    flex-direction: column;
+    align-items: flex-start;
+
+    gap: 8px;
+  }
+
+  .score-value {
+    font-size: 24px;
+  }
+
+  .feedback-item-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+}

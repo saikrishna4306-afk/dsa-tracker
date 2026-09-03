@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import UserSelection, DailyQuestion,CodeSubmission
+from .models import UserSelection, DailyQuestion,CodeSubmission,TestCase
 from questions.serializers import QuestionSerializer
 
 
@@ -80,8 +80,10 @@ class DailyQuestionSerializer(serializers.ModelSerializer):
             "created_at",
         ]
 class CodeSubmissionSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = CodeSubmission
+
         fields = [
             "id",
             "user",
@@ -89,10 +91,32 @@ class CodeSubmissionSerializer(serializers.ModelSerializer):
             "language",
             "code",
             "status",
+
+            # Test case results
             "test_cases_passed",
             "total_test_cases",
+            "test_results",
+
+            # Final score
             "score",
+
+            # AI score breakdown
+            "algorithm_score",
+            "time_complexity_score",
+            "space_complexity_score",
+            "code_quality_score",
+
+            # AI feedback
+            "algorithm_feedback",
+            "time_complexity",
+            "space_complexity",
+            "code_quality_feedback",
+            "overall_feedback",
+
+            # General feedback
             "feedback",
+
+            # Timestamps
             "submitted_at",
             "updated_at",
         ]
@@ -101,10 +125,43 @@ class CodeSubmissionSerializer(serializers.ModelSerializer):
             "id",
             "user",
             "status",
+
             "test_cases_passed",
             "total_test_cases",
+            "test_results",
+
             "score",
+
+            "algorithm_score",
+            "time_complexity_score",
+            "space_complexity_score",
+            "code_quality_score",
+
+            "algorithm_feedback",
+            "time_complexity",
+            "space_complexity",
+            "code_quality_feedback",
+            "overall_feedback",
+
             "feedback",
+
             "submitted_at",
             "updated_at",
-        ]        
+        ]    
+
+class TestCaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=TestCase
+        fields=[
+            "id",
+            "question",
+            "input_data",
+            "expected_output",
+            "is_hidden",
+            "created_at",
+        
+        ]
+        read_only_fields=[
+            "id",
+            "created_at",
+        ]
