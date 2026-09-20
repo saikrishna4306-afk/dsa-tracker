@@ -1,0 +1,33 @@
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: dsa-tracker-postgres
+    environment:
+      POSTGRES_DB: dsa_tracker
+      POSTGRES_USER: dsa_user
+      POSTGRES_PASSWORD: dsa_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: ./backend
+    container_name: dsa-tracker-backend
+    env_file:
+      - ./backend/.env
+    environment:
+      DB_NAME: dsa_tracker
+      DB_USER: dsa_user
+      DB_PASSWORD: dsa_password
+      DB_HOST: postgres
+      DB_PORT: "5432"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:

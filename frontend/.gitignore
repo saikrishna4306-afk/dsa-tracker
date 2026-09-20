@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Local database backups
+*.sql
+
+# Local frontend archive
+frontend.zip

@@ -2,32 +2,24 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import apiClient from "../api/client";
-import "../styles/Dashboard.css";
+import SpotlightCard from "../components/SpotlightCard/SpotlightCard";
+import CountUp from "../components/CountUp/CountUp";
 
 function Dashboard({ onLogout }) {
   const navigate = useNavigate();
 
   const [questions, setQuestions] = useState([]);
-  const [selections, setSelections] =
-    useState([]);
-
-  const [progress, setProgress] =
-    useState(null);
-
-  const [dailyQuestion, setDailyQuestion] =
-    useState(null);
+  const [selections, setSelections] = useState([]);
+  const [progress, setProgress] = useState(null);
+  const [dailyQuestion, setDailyQuestion] = useState(null);
 
   const [search, setSearch] = useState("");
-  const [difficulty, setDifficulty] =
-    useState("");
-
+  const [difficulty, setDifficulty] = useState("");
   const [topic, setTopic] = useState("");
-  const [platform, setPlatform] =
-    useState("");
+  const [platform, setPlatform] = useState("");
 
-  const [loading, setLoading] =
-    useState(true);
-
+  const [loading, setLoading] = useState(true);
+  const [progressWidth, setProgressWidth] = useState(0);
 
   // ==========================================
   // GET QUESTIONS
@@ -53,28 +45,19 @@ function Dashboard({ onLogout }) {
         params.platform = platform;
       }
 
-      const response =
-        await apiClient.get(
-          "/questions/",
-          { params }
-        );
+      const response = await apiClient.get("/questions/", {
+        params,
+      });
 
       if (Array.isArray(response.data)) {
         setQuestions(response.data);
       } else {
-        setQuestions(
-          response.data.results || []
-        );
+        setQuestions(response.data.results || []);
       }
-
     } catch (error) {
-      console.error(
-        "Failed to load questions:",
-        error
-      );
+      console.error("Failed to load questions:", error);
     }
   };
-
 
   // ==========================================
   // GET MY QUESTIONS
@@ -82,23 +65,13 @@ function Dashboard({ onLogout }) {
 
   const getSelections = async () => {
     try {
-      const response =
-        await apiClient.get(
-          "/progress/"
-        );
+      const response = await apiClient.get("/progress/");
 
-      setSelections(
-        response.data || []
-      );
-
+      setSelections(response.data || []);
     } catch (error) {
-      console.error(
-        "Failed to load my questions:",
-        error
-      );
+      console.error("Failed to load my questions:", error);
     }
   };
-
 
   // ==========================================
   // GET PROGRESS
@@ -106,43 +79,28 @@ function Dashboard({ onLogout }) {
 
   const getProgress = async () => {
     try {
-      const response =
-        await apiClient.get(
-          "/progress/"
-        );
+      const response = await apiClient.get("/progress/");
 
-      const data =
-        response.data || [];
+      const data = response.data || [];
 
       const total = data.length;
 
-      const selected =
-        data.filter(
-          (item) =>
-            item.status === "SELECTED"
-        ).length;
+      const selected = data.filter(
+        (item) => item.status === "SELECTED"
+      ).length;
 
-      const inProgress =
-        data.filter(
-          (item) =>
-            item.status ===
-            "IN_PROGRESS"
-        ).length;
+      const inProgress = data.filter(
+        (item) => item.status === "IN_PROGRESS"
+      ).length;
 
-      const completed =
-        data.filter(
-          (item) =>
-            item.status ===
-            "COMPLETED"
-        ).length;
+      const completed = data.filter(
+        (item) => item.status === "COMPLETED"
+      ).length;
 
       const percentage =
         total === 0
           ? 0
-          : Math.round(
-              (completed / total) *
-                100
-            );
+          : Math.round((completed / total) * 100);
 
       setProgress({
         total,
@@ -151,15 +109,10 @@ function Dashboard({ onLogout }) {
         completed,
         percentage,
       });
-
     } catch (error) {
-      console.error(
-        "Failed to load progress:",
-        error
-      );
+      console.error("Failed to load progress:", error);
     }
   };
-
 
   // ==========================================
   // GET DAILY QUESTION
@@ -167,48 +120,49 @@ function Dashboard({ onLogout }) {
 
   const getDailyQuestion = async () => {
     try {
-      const response =
-        await apiClient.get(
-          "/progress/daily/"
-        );
-
-      setDailyQuestion(
-        response.data
+      const response = await apiClient.get(
+        "/progress/daily/"
       );
 
+      setDailyQuestion(response.data);
     } catch (error) {
-      console.error(
-        "No daily question:",
-        error
-      );
+      console.error("No daily question:", error);
 
       setDailyQuestion(null);
     }
   };
-
 
   // ==========================================
   // INITIAL LOAD
   // ==========================================
 
   useEffect(() => {
-    const loadDashboard =
-      async () => {
-        setLoading(true);
+    const loadDashboard = async () => {
+      setLoading(true);
 
-        await Promise.all([
-          getQuestions(),
-          getSelections(),
-          getProgress(),
-          getDailyQuestion(),
-        ]);
+      await Promise.all([
+        getQuestions(),
+        getSelections(),
+        getProgress(),
+        getDailyQuestion(),
+      ]);
 
-        setLoading(false);
-      };
+      setLoading(false);
+    };
 
     loadDashboard();
   }, []);
 
+
+  useEffect(() => {
+  if (progress?.percentage !== undefined) {
+    const timer = setTimeout(() => {
+      setProgressWidth(progress.percentage);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }
+}, [progress?.percentage]);
 
   // ==========================================
   // APPLY FILTERS
@@ -218,96 +172,77 @@ function Dashboard({ onLogout }) {
     await getQuestions();
   };
 
-
   // ==========================================
   // SELECT QUESTION
   // ==========================================
 
-  const handleSelectQuestion =
-    async (questionId) => {
-      try {
-        await apiClient.post(
-          "/progress/",
-          {
-            question: questionId,
-            status: "SELECTED",
-          }
-        );
+  const handleSelectQuestion = async (questionId) => {
+    try {
+      await apiClient.post("/progress/", {
+        question: questionId,
+        status: "SELECTED",
+      });
 
-        await getSelections();
-        await getProgress();
+      await getSelections();
+      await getProgress();
 
+      alert("Question selected successfully!");
+    } catch (error) {
+      console.error(
+        "Question selection failed:",
+        error
+      );
+
+      if (error.response?.status === 400) {
         alert(
-          "Question selected successfully!"
+          "You have already selected this question."
         );
-
-      } catch (error) {
-        console.error(
-          "Question selection failed:",
-          error
-        );
-
-        if (
-          error.response?.status === 400
-        ) {
-          alert(
-            "You have already selected this question."
-          );
-        } else {
-          alert(
-            "Unable to select question."
-          );
-        }
+      } else {
+        alert("Unable to select question.");
       }
-    };
-
+    }
+  };
 
   // ==========================================
   // UPDATE STATUS
   // ==========================================
 
-  const handleStatusChange =
-    async (
-      selectionId,
-      status
-    ) => {
-      try {
-        await apiClient.patch(
-          `/progress/${selectionId}/`,
-          {
-            status,
-          }
-        );
+  const handleStatusChange = async (
+    selectionId,
+    status
+  ) => {
+    try {
+      await apiClient.patch(
+        `/progress/${selectionId}/`,
+        {
+          status,
+        }
+      );
 
-        await getSelections();
-        await getProgress();
+      await getSelections();
+      await getProgress();
+    } catch (error) {
+      console.error(
+        "Failed to update status:",
+        error
+      );
 
-      } catch (error) {
-        console.error(
-          "Failed to update status:",
-          error
-        );
-
-        alert(
-          "Unable to update question status."
-        );
-      }
-    };
-
+      alert(
+        "Unable to update question status."
+      );
+    }
+  };
 
   // ==========================================
   // FIND SELECTION
   // ==========================================
 
-  const getQuestionSelection =
-    (questionId) => {
-      return selections.find(
-        (selection) =>
-          selection.question ===
-          questionId
-      );
-    };
-
+  const getQuestionSelection = (questionId) => {
+    return selections.find(
+      (selection) =>
+        selection.question === questionId
+    );
+  };
 
   // ==========================================
   // LOGOUT
@@ -319,7 +254,6 @@ function Dashboard({ onLogout }) {
     }
   };
 
-
   // ==========================================
   // LOADING
   // ==========================================
@@ -327,32 +261,33 @@ function Dashboard({ onLogout }) {
   if (loading) {
     return (
       <div className="dashboard-loading">
-        <h2>
-          Loading Dashboard...
-        </h2>
+        <h2>Loading Dashboard...</h2>
       </div>
     );
   }
 
-
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-page">
 
-      {/* ======================================
+      {/* =========================
           HEADER
-      ====================================== */}
+      ========================= */}
 
       <header className="dashboard-header">
 
         <div>
+          <div className="dashboard-eyebrow">
+            DSA TRACKER
+          </div>
 
-          <h1>DSA Tracker</h1>
+          <h1>
+            Welcome back 👋
+          </h1>
 
           <p>
-            Practice, track and improve
-            your problem-solving skills.
+            Practice consistently. Track your
+            progress. Master DSA.
           </p>
-
         </div>
 
         <button
@@ -365,14 +300,14 @@ function Dashboard({ onLogout }) {
       </header>
 
 
-      {/* ======================================
+      {/* =========================
           DAILY QUESTION
-      ====================================== */}
+      ========================= */}
 
       {dailyQuestion && (
-        <section className="daily-question-section">
+        <section className="dashboard-card daily-card">
 
-          <div className="daily-question-content">
+          <div className="daily-card-content">
 
             <div>
 
@@ -381,52 +316,37 @@ function Dashboard({ onLogout }) {
               </span>
 
               <h2>
-                {
-                  dailyQuestion
-                    .question?.title
-                }
+                {dailyQuestion.question?.title}
               </h2>
 
               <div className="question-meta">
 
-                <span>
-                  {
-                    dailyQuestion
-                      .question
-                      ?.difficulty
-                  }
+                <span className="meta-pill difficulty">
+                  {dailyQuestion.question?.difficulty}
                 </span>
 
-                <span>
-                  {
-                    dailyQuestion
-                      .question
-                      ?.topic
-                  }
+                <span className="meta-pill">
+                  {dailyQuestion.question?.topic}
                 </span>
 
-                <span>
-                  {
-                    dailyQuestion
-                      .question
-                      ?.platform
-                  }
+                <span className="meta-pill">
+                  {dailyQuestion.question?.platform}
                 </span>
 
               </div>
 
             </div>
 
-
             <button
-              className="daily-solve-button"
+              className="premium-button"
               onClick={() =>
                 navigate(
                   `/problem/${dailyQuestion.question.id}`
                 )
               }
             >
-              Solve Problem →
+              Solve Problem
+              <span>→</span>
             </button>
 
           </div>
@@ -435,133 +355,297 @@ function Dashboard({ onLogout }) {
       )}
 
 
-      {/* ======================================
-          STATS
-      ====================================== */}
+      {/* =========================
+          STAT CARDS
+      ========================= */}
 
       <section className="stats-grid">
 
-        <div className="stat-card">
+        {/* TOTAL QUESTIONS */}
 
+        <SpotlightCard
+          className="dashboard-stat-card"
+          spotlightColor="rgba(139, 92, 246, 0.28)"
+        >
           <span className="stat-label">
             Total Questions
           </span>
 
           <strong>
-            {progress?.total || 0}
+            <CountUp
+              from={0}
+              to={progress?.total || 0}
+              duration={2000}
+            />
           </strong>
 
-        </div>
+          <span className="stat-description">
+            Available for practice
+          </span>
+        </SpotlightCard>
 
 
-        <div className="stat-card">
+        {/* SELECTED */}
 
+        <SpotlightCard
+          className="dashboard-stat-card"
+          spotlightColor="rgba(168, 85, 247, 0.28)"
+        >
           <span className="stat-label">
             Selected
           </span>
 
           <strong>
-            {progress?.selected || 0}
+            <CountUp
+              from={0}
+              to={progress?.selected || 0}
+              duration={2000}
+            />
           </strong>
 
-        </div>
+          <span className="stat-description">
+            Added to your practice list
+          </span>
+        </SpotlightCard>
 
 
-        <div className="stat-card">
+        {/* IN PROGRESS */}
 
+        <SpotlightCard
+          className="dashboard-stat-card"
+          spotlightColor="rgba(59, 130, 246, 0.25)"
+        >
           <span className="stat-label">
             In Progress
           </span>
 
           <strong>
-            {progress?.in_progress || 0}
+            <CountUp
+              from={0}
+              to={progress?.in_progress || 0}
+              duration={2000}
+            />
           </strong>
 
-        </div>
+          <span className="stat-description">
+            Currently being practiced
+          </span>
+        </SpotlightCard>
 
 
-        <div className="stat-card">
+        {/* COMPLETED */}
 
+        <SpotlightCard
+          className="dashboard-stat-card"
+          spotlightColor="rgba(16, 185, 129, 0.25)"
+        >
           <span className="stat-label">
             Completed
           </span>
 
           <strong>
-            {progress?.completed || 0}
+            <CountUp
+              from={0}
+              to={progress?.completed || 0}
+              duration={2000}
+            />
           </strong>
 
-        </div>
+          <span className="stat-description">
+            Successfully completed
+          </span>
+        </SpotlightCard>
 
       </section>
 
 
-      {/* ======================================
-          OVERALL PROGRESS
-      ====================================== */}
+      {/* =========================
+          PROGRESS
+      ========================= */}
 
-      <section className="progress-section">
+      <section className="dashboard-grid">
 
-        <div className="progress-heading">
+        {/* PROGRESS CARD */}
 
-          <div>
+        <div className="dashboard-card progress-card">
 
-            <h2>
-              Overall Progress
-            </h2>
+          <div className="card-heading">
 
-            <p>
-              Track your completed
-              questions.
-            </p>
+            <div>
+              <span className="card-kicker">
+                YOUR JOURNEY
+              </span>
+
+              <h2>
+                Overall Progress
+              </h2>
+            </div>
+
+            {/* ANIMATED PERCENTAGE */}
+
+            <div className="progress-percentage">
+              <CountUp
+                from={0}
+                to={progress?.percentage || 0}
+                duration={2000}
+              />
+              %
+            </div>
 
           </div>
 
-          <strong>
-            {progress?.percentage || 0}%
-          </strong>
+
+          {/* PROGRESS BAR */}
+
+          <div className="progress-bar-container">
+
+            <div
+  className="progress-bar"
+  style={{
+    width: `${progressWidth}%`,
+  }}
+/>
+
+          </div>
+
+
+          {/* PROGRESS SUMMARY */}
+
+          <div className="progress-summary">
+
+            {/* COMPLETED */}
+
+            <div>
+
+              <span className="progress-dot completed-dot" />
+
+              <span>
+                Completed
+              </span>
+
+              <strong>
+                <CountUp
+                  from={0}
+                  to={progress?.completed || 0}
+                  duration={2000}
+                />
+              </strong>
+
+            </div>
+
+
+            {/* IN PROGRESS */}
+
+            <div>
+
+              <span className="progress-dot progress-dot-blue" />
+
+              <span>
+                In Progress
+              </span>
+
+              <strong>
+                <CountUp
+                  from={0}
+                  to={progress?.in_progress || 0}
+                  duration={2000}
+                />
+              </strong>
+
+            </div>
+
+
+            {/* SELECTED */}
+
+            <div>
+
+              <span className="progress-dot progress-dot-muted" />
+
+              <span>
+                Selected
+              </span>
+
+              <strong>
+                <CountUp
+                  from={0}
+                  to={progress?.selected || 0}
+                  duration={2000}
+                />
+              </strong>
+
+            </div>
+
+          </div>
 
         </div>
 
 
-        <div className="progress-bar-container">
+        {/* =========================
+            QUICK SUMMARY
+        ========================= */}
 
-          <div
-            className="progress-bar"
-            style={{
-              width: `${
-                progress?.percentage ||
-                0
-              }%`,
-            }}
-          />
+        <div className="dashboard-card summary-card">
+
+          <span className="card-kicker">
+            KEEP GOING
+          </span>
+
+          <h2>
+            Build consistency.
+          </h2>
+
+          <p>
+            Every problem you solve moves
+            you one step closer to mastering
+            data structures and algorithms.
+          </p>
+
+          <div className="summary-stat">
+
+            <strong>
+              <CountUp
+                from={0}
+                to={progress?.percentage || 0}
+                duration={2000}
+              />
+              %
+            </strong>
+
+            <span>
+              of your selected questions
+              completed
+            </span>
+
+          </div>
 
         </div>
 
       </section>
 
 
-      {/* ======================================
+      {/* =========================
           MY QUESTIONS
-      ====================================== */}
+      ========================= */}
 
-      <section className="my-questions-section">
+      <section className="section">
 
-        <div className="my-questions-heading">
+        <div className="section-header">
 
           <div>
+            <span className="card-kicker">
+              YOUR PRACTICE
+            </span>
 
             <h2>
               My Questions
             </h2>
 
             <p>
-              Questions you have selected
-              to practice.
+              Questions you selected to practice.
             </p>
-
           </div>
 
-          <span>
+          <span className="section-count">
             {selections.length} Questions
           </span>
 
@@ -570,16 +654,20 @@ function Dashboard({ onLogout }) {
 
         {selections.length === 0 ? (
 
-          <div className="my-questions-empty">
+          <div className="dashboard-card empty-card">
+
+            <div className="empty-icon">
+              +
+            </div>
 
             <h3>
               No questions selected yet
             </h3>
 
             <p>
-              Select a question from
-              Practice Questions to
-              start solving.
+              Select a question from the
+              practice section below to start
+              your journey.
             </p>
 
           </div>
@@ -588,111 +676,107 @@ function Dashboard({ onLogout }) {
 
           <div className="my-question-list">
 
-            {selections.map(
-              (selection) => (
+            {selections.map((selection) => (
 
-                <div
-                  className="my-question-card"
-                  key={selection.id}
-                >
+              <div
+                className="dashboard-card my-question-card"
+                key={selection.id}
+              >
 
-                  <div className="my-question-info">
+                <div className="my-question-info">
+
+                  <div className="question-title-row">
 
                     <h3>
-                      {
-                        selection.question_title
-                      }
+                      {selection.question_title}
                     </h3>
 
-                    <p>
-                      {
-                        selection.difficulty
-                      }
-                      {" • "}
-                      {
-                        selection.topic
-                      }
-                      {" • "}
-                      {
-                        selection.platform
-                      }
-                    </p>
-
                     <span
-                      className={`my-status ${selection.status.toLowerCase()}`}
+                      className={`my-status ${
+                        selection.status.toLowerCase()
+                      }`}
                     >
-                      {
-                        selection.status.replace(
-                          "_",
-                          " "
-                        )
-                      }
+                      {selection.status.replace(
+                        "_",
+                        " "
+                      )}
                     </span>
 
                   </div>
 
 
-                  <div className="my-question-actions">
+                  <div className="question-meta">
 
-                    {/* SOLVE */}
+                    <span>
+                      {selection.difficulty}
+                    </span>
 
-                    <button
-                      className="solve-button"
-                      onClick={() =>
-                        navigate(
-                          `/problem/${selection.question}`
-                        )
-                      }
-                    >
-                      Solve Problem →
-                    </button>
+                    <span>
+                      {selection.topic}
+                    </span>
 
-
-                    {/* START */}
-
-                    {selection.status ===
-                      "SELECTED" && (
-
-                      <button
-                        className="start-button"
-                        onClick={() =>
-                          handleStatusChange(
-                            selection.id,
-                            "IN_PROGRESS"
-                          )
-                        }
-                      >
-                        Start
-                      </button>
-
-                    )}
-
-
-                    {/* COMPLETE */}
-
-                    {selection.status ===
-                      "IN_PROGRESS" && (
-
-                      <button
-                        className="complete-button"
-                        onClick={() =>
-                          handleStatusChange(
-                            selection.id,
-                            "COMPLETED"
-                          )
-                        }
-                      >
-                        Mark Completed
-                      </button>
-
-                    )}
+                    <span>
+                      {selection.platform}
+                    </span>
 
                   </div>
 
                 </div>
 
-              )
-            )}
+
+                <div className="my-question-actions">
+
+                  <button
+                    className="secondary-button"
+                    onClick={() =>
+                      navigate(
+                        `/problem/${selection.question}`
+                      )
+                    }
+                  >
+                    Solve
+                    <span>→</span>
+                  </button>
+
+
+                  {selection.status === "SELECTED" && (
+
+                    <button
+                      className="ghost-action"
+                      onClick={() =>
+                        handleStatusChange(
+                          selection.id,
+                          "IN_PROGRESS"
+                        )
+                      }
+                    >
+                      Start
+                    </button>
+
+                  )}
+
+
+                  {selection.status === "IN_PROGRESS" && (
+
+                    <button
+                      className="complete-action"
+                      onClick={() =>
+                        handleStatusChange(
+                          selection.id,
+                          "COMPLETED"
+                        )
+                      }
+                    >
+                      Mark Completed
+                    </button>
+
+                  )}
+
+                </div>
+
+              </div>
+
+            ))}
 
           </div>
 
@@ -701,29 +785,35 @@ function Dashboard({ onLogout }) {
       </section>
 
 
-      {/* ======================================
+      {/* =========================
           PRACTICE QUESTIONS
-      ====================================== */}
+      ========================= */}
 
-      <section className="practice-section">
+      <section className="section practice-section">
 
-        <div className="practice-heading">
+        <div className="section-header">
 
-          <h2>
-            Practice Questions
-          </h2>
+          <div>
+            <span className="card-kicker">
+              PROBLEM LIBRARY
+            </span>
 
-          <p>
-            Select questions you want
-            to practice.
-          </p>
+            <h2>
+              Practice Questions
+            </h2>
+
+            <p>
+              Discover problems and add them
+              to your practice list.
+            </p>
+          </div>
 
         </div>
 
 
         {/* FILTERS */}
 
-        <div className="filters-container">
+        <div className="dashboard-card filters-container">
 
           <input
             type="text"
@@ -738,9 +828,7 @@ function Dashboard({ onLogout }) {
           <select
             value={difficulty}
             onChange={(e) =>
-              setDifficulty(
-                e.target.value
-              )
+              setDifficulty(e.target.value)
             }
           >
 
@@ -778,15 +866,13 @@ function Dashboard({ onLogout }) {
             placeholder="Platform"
             value={platform}
             onChange={(e) =>
-              setPlatform(
-                e.target.value
-              )
+              setPlatform(e.target.value)
             }
           />
 
 
           <button
-            className="filter-button"
+            className="premium-button filter-button"
             onClick={handleFilter}
           >
             Apply Filters
@@ -795,86 +881,93 @@ function Dashboard({ onLogout }) {
         </div>
 
 
-        {/* QUESTION LIST */}
+        {/* QUESTIONS */}
 
-        <div className="question-list">
+        {questions.length === 0 ? (
 
-          {questions.length === 0 ? (
+          <div className="dashboard-card empty-card">
 
-            <div className="no-questions">
+            <h3>
+              No questions found
+            </h3>
 
-              <h3>
-                No questions found
-              </h3>
+            <p>
+              Try changing your search or
+              filters.
+            </p>
 
-              <p>
-                Try changing your search
-                or filters.
-              </p>
+          </div>
 
-            </div>
+        ) : (
 
-          ) : (
+          <div className="question-list">
 
-            questions.map(
-              (question) => {
+            {questions.map((question) => {
 
-                const selection =
-                  getQuestionSelection(
-                    question.id
-                  );
+              const selection =
+                getQuestionSelection(
+                  question.id
+                );
 
-                return (
-                  <div
-                    className="question-card"
-                    key={question.id}
-                  >
+              return (
 
-                    <div className="question-info">
+                <div
+                  className="dashboard-card question-card"
+                  key={question.id}
+                >
+
+                  <div className="question-info">
+
+                    <div className="question-title-row">
 
                       <h3>
                         {question.title}
                       </h3>
 
+                      {selection && (
 
-                      <div className="question-meta">
-
-                        <span>
-                          {
-                            question.difficulty
-                          }
+                        <span
+                          className={`practice-status ${
+                            selection.status.toLowerCase()
+                          }`}
+                        >
+                          {selection.status.replace(
+                            "_",
+                            " "
+                          )}
                         </span>
 
-                        <span>
-                          {
-                            question.topic
-                          }
-                        </span>
+                      )}
 
-                        <span>
-                          {
-                            question.platform
-                          }
-                        </span>
-
-                      </div>
+                    </div>
 
 
-                      {question.tags &&
-                        question.tags.length >
-                          0 && (
+                    <div className="question-meta">
+
+                      <span className="meta-pill">
+                        {question.difficulty}
+                      </span>
+
+                      <span className="meta-pill">
+                        {question.topic}
+                      </span>
+
+                      <span className="meta-pill">
+                        {question.platform}
+                      </span>
+
+                    </div>
+
+
+                    {question.tags &&
+                      question.tags.length > 0 && (
 
                         <div className="question-tags">
 
                           {question.tags.map(
-                            (
-                              tag,
-                              index
-                            ) => (
+                            (tag, index) => (
 
-                              <span
-                                key={index}
-                              >
+                              <span key={index}>
                                 {tag}
                               </span>
 
@@ -885,70 +978,49 @@ function Dashboard({ onLogout }) {
 
                       )}
 
-                    </div>
+                  </div>
 
 
-                    <div className="question-actions">
+                  <div className="question-actions">
 
-                      {/* SOLVE */}
+                    <button
+                      className="secondary-button"
+                      onClick={() =>
+                        navigate(
+                          `/problem/${question.id}`
+                        )
+                      }
+                    >
+                      Solve Problem
+                      <span>→</span>
+                    </button>
+
+
+                    {!selection && (
 
                       <button
-                        className="solve-button"
+                        className="select-button"
                         onClick={() =>
-                          navigate(
-                            `/problem/${question.id}`
+                          handleSelectQuestion(
+                            question.id
                           )
                         }
                       >
-                        Solve Problem →
+                        + Select
                       </button>
 
-
-                      {/* SELECT */}
-
-                      {!selection && (
-
-                        <button
-                          className="select-button"
-                          onClick={() =>
-                            handleSelectQuestion(
-                              question.id
-                            )
-                          }
-                        >
-                          + Select
-                        </button>
-
-                      )}
-
-
-                      {/* STATUS */}
-
-                      {selection && (
-
-                        <span
-                          className={`practice-status ${selection.status.toLowerCase()}`}
-                        >
-                          {
-                            selection.status.replace(
-                              "_",
-                              " "
-                            )
-                          }
-                        </span>
-
-                      )}
-
-                    </div>
+                    )}
 
                   </div>
-                );
-              }
-            )
 
-          )}
+                </div>
 
-        </div>
+              );
+            })}
+
+          </div>
+
+        )}
 
       </section>
 
