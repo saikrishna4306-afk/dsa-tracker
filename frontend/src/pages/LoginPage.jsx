@@ -62,7 +62,7 @@ function LoginPage({ onLoginSuccess }) {
 
   const handleGoogleLogin = () => {
     window.location.href =
-      "http://127.0.0.1:8000/accounts/google/login/";
+  `${import.meta.env.VITE_API_BASE_URL}/accounts/google/login/`;
   };
 
   return (

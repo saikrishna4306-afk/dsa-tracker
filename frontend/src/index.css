@@ -2193,3 +2193,79 @@ tr:hover td {
     height: 54px;
   }
 }
+/* =========================================================
+   PROBLEM WORKSPACE - RUN RESULT VISIBILITY
+========================================================= */
+
+.result-summary {
+  color: #172033;
+}
+
+.result-summary h3,
+.result-summary h4,
+.result-summary p {
+  color: #172033;
+}
+
+.result-status {
+  color: #172033;
+}
+
+.status-passed {
+  color: #198754 !important;
+  font-weight: 700;
+}
+
+.status-failed {
+  color: #dc3545 !important;
+  font-weight: 700;
+}
+
+.status-other {
+  color: #667085 !important;
+  font-weight: 700;
+}
+
+.test-results {
+  color: #172033;
+}
+
+.test-results h4 {
+  color: #172033;
+}
+
+.test-result-item {
+  background: #ffffff;
+  color: #172033;
+  border: 1px solid #d0d5dd;
+}
+
+.test-result-header {
+  background: #f7f7f7;
+  color: #172033;
+}
+
+.test-result-header strong,
+.test-result-header span {
+  color: #172033;
+}
+
+.hidden-test-message {
+  color: #667085;
+}
+
+.test-result-details {
+  background: #ffffff;
+  color: #172033;
+}
+
+.test-result-details strong {
+  color: #172033;
+}
+
+.test-result-details pre {
+  background: #f5f5f5;
+  color: #172033;
+
+  border: 1px solid #e5e7eb;
+}

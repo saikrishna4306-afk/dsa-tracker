@@ -1,5 +1,4 @@
 services:
-
   postgres:
     image: postgres:16
     container_name: dsa-tracker-postgres
@@ -28,6 +27,27 @@ services:
       - "8000:8000"
     depends_on:
       - postgres
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: dsa-tracker-frontend
+    env_file:
+      - ./frontend/.env
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+  nginx:
+    image: nginx:alpine
+    container_name: dsa-tracker-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend    
 
 volumes:
   postgres_data:
