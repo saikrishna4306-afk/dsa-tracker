@@ -11,6 +11,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from allauth.socialaccount.models import SocialAccount
 
 from .serializers import RegisterSerializer, UserSerializer
+import os
 
 
 class RegisterView(APIView):
@@ -81,9 +82,7 @@ class GoogleJWTView(APIView):
                 ""
             )
 
-            google_email = extra_data.get(
-                "email"
-            )
+            google_email = extra_data.get("email")
 
             if google_email:
                 user.email = google_email
@@ -99,7 +98,7 @@ class GoogleJWTView(APIView):
         refresh_token = str(refresh)
 
         frontend_url = (
-            "http://localhost:5173/google-callback"
+            f"{os.getenv('FRONTEND_URL')}/google-callback"
             f"#access={access_token}"
             f"&refresh={refresh_token}"
         )
